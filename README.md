@@ -6,7 +6,7 @@
  - Andreas Juettner    <juettner@soton.ac.uk>
  - Ben Kitching-Morley <bkm1n18@soton.ac.uk>
 
-## Description:
+## Introduction:
 These scripts were used for the data analysis underlying the paper
    "Nonperturbative infrared finiteness in super-renormalisable scalar quantum field theory"
    [https://arxiv.org/abs/2009.14768]
@@ -17,6 +17,8 @@ by: Guido Cossu, Luigi Del Debbio, Andreas Juttner, Ben Kitching-Morley, Joseph 
 [1] Jackiw and S. Templeton, How Superrenormalizable Interactions Cure their Infrared Divergences, Phys. Rev. D23, 2291 (1981).
 [2] T. Appelquist and R. D. Pisarski, High-Temperature Yang-Mills Theories and Three-Dimensional Quantum Chromodynamics, Phys. Rev. D23, 2305 (1981).
 
+
+## Description
 The suite of scripts here carry out the entire data-analysis underlying the paper. 
 In particular:
 - Construction of the reweighted Binder cumulant under boostrap resampling and the determination of its crossing
@@ -24,10 +26,10 @@ points with user-determined values (`Binderanalysis.py`)
 - Frequentist finite-size-scaling analysis under bootsrap
 - Bayesian finite-size-scaling analysis
 
-Usage:
+## Usage:
 
 
-Required libraries:
+## Required libraries:
 - Python v3 [www.python.org]
 - Scipy [www.scipy.org]
 - other python standard libraries: `random`, `h5py`, `os`,`sys`, `parse`, `warnings`
