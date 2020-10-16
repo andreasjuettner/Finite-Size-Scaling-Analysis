@@ -186,4 +186,54 @@ def check_exists(ss,x):
      print("Value of %s=%s not available"%(ss,x))
      print("Available values are ",' '.join([str(i) for i in available]))
      exit()
+def disperr3(val,dval):
+    """ 
+
+     Helper routine for nicely printing results with error bars.
+     Based on MATLAB script by Roland Hoffmann
+
+    """
+    n=len(val)
+    if n!=len(dval):
+     print("val and dval must have the same length!")
+     print(val,dval)
+     print("exiting")
+     exit()
+    dig=2
+    res = n*['']
+    for i in range(n):
+     if dval[i] == 0. and val[i] == 0.:
+      res[i]     = "0"
+     elif np.isnan(val[i]) or np.isnan(dval[i]):
+      res[i]     = "nan"
+     elif dval[i] == 0. and val[i] != 0.:
+      value      = "%d" % val[i]
+      res[i]     = value
+     #elif dval[i] < 10: 
+     elif dval[i] < 1: 
+      location 	 = int(np.floor(np.log10(dval[i])))
+      append_err = "("+str(int(np.round(dval[i]*10**(-location+dig-1))))+")"
+      #print location,val[i],dig
+      if np.abs(val[i])<1e-100:
+       val[i]=0.
+       location=1
+      valformat  = "%."+str(-location+dig-1)+"f"
+      sval       = valformat % val[i]
+      res[i]	 = sval +append_err
+     elif dval[i]>=1:
+      digits	 = min(0,int(np.ceil(np.log10(dval[i]))-1))+1
+      error      = np.around(dval[i],digits)
+      value 	 = np.around(val[i],digits)
+      serr       = "%."+str(digits)+"f(%."+str(digits)+"f)"
+      #print serr
+      #print digits,dval[i],val[i],error,value,serr
+      serr       = serr%(value,error)
+      #print serr,dval[i]
+      res[i]	 = serr#str(value)+"("+str(error)+")"
+     else:
+      digits	 = max(0,int(np.ceil(np.log10(dval[i]))-1))
+      error 	 = int(round(dval[i]/10**digits)*10**digits)
+      value 	 = round(val[i]/10**digits)*10**digits
+      res[i]	 = str(value)+"("+str(error)+")"
+    return res
 
