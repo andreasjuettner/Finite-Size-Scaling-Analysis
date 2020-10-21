@@ -388,7 +388,10 @@ class Critical_analysis():
      #
      # binning for reweighting factor, phi^2, M^2 and M^4
      #
-     RW_fac_bin  = self.RWbinit_N(RWfac,self.Nbin_tauint[i])        
+     try:
+      RW_fac_bin  = self.RWbinit_N(RWfac,self.Nbin_tauint[i])        
+     except:
+      RW_fac_bin  = self.RWbinit_N(np.nan*RWfac,self.Nbin_tauint[i])        
      try:
       RW_2_bin   = self.RWbinit_N(RWfac*np.array(self.M2[str(i)]),self.Nbin_tauint[i])        
      except:
