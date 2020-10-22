@@ -430,7 +430,7 @@ class Critical_analysis():
     else:
      denom = np.sum(1./np.array(dres)**2)
      numer = np.sum(np.array(res)/np.array(dres)**2)
-    print(numer,denom)
+    #print(numer,denom)
     B = 1-self.N*1./3*numer/denom
     return B-self.Bbar
 
