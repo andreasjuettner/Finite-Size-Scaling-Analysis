@@ -35,7 +35,7 @@ points with user-determined values (`Binderanalysis.py`)
 `python3 Binderanalysis.py <N> <ag> <Bbar> <L/a>`
 where `N` as in `SU(N)`, `ag` the gauge coupling, `Bbar` the desired crossing point, `L/a` the desired lattice size.
 
-The required MCMC data can be donwloaded from zenodo here **UNDER CONSTRUCTION** and is stored in a local subcirectory
+The required MCMC data can be donwloaded from zenodo here **UNDER CONSTRUCTION** and needs to be copied into a local subcirectory
 called `h5data/`. The data file contains data for
 
  - `N`=2,3
@@ -44,7 +44,7 @@ called `h5data/`. The data file contains data for
 
 The shell script `do_Binderanalysis.sh` loops over all available data. Note the `&` in the shell script which will trigger many instances of the code running in parallel. This might need to be adapted for smaller compute nodes.
 
-The output is stored in `h5data/Bindercrossings.h5` and is required by the following codes.
+The output will be stored in `h5data/Bindercrossings.h5` and is required by the following codes.
 
 ### Frequentist analysis
 
