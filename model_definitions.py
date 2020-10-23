@@ -5,7 +5,6 @@ import pdb
 
 import matplotlib.pyplot as plt
 from scipy.special import gammaincc
-from scanf import scanf
 import h5py
 
 

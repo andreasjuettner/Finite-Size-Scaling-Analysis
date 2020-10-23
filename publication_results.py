@@ -335,7 +335,6 @@ def get_systematic_errors(N):
   return results
 
 
-## Part IV: Calculating the Bayes Factor for figure 4.
 def get_Bayes_factors(N):
   """
     This function produces the Bayes Factors shown in the publication. Note that
@@ -453,12 +452,12 @@ def get_Bayes_factors(N):
   return Bayes_factors
 
 
-if __name__ == "__main__":
-  pvalues_N2 = get_pvalues_central_fit(2)
-  pvalues_N4 = get_pvalues_central_fit(4)
-  statistical_N2 = get_statistical_errors_central_fit(2)
-  statistical_N4 = get_statistical_errors_central_fit(4)
-  systematic_N2 = get_systematic_errors(2)
-  systematic_N4 = get_systematic_errors(4)
-  Bayes_factors_N2 = get_Bayes_factors(2)
-  Bayes_factors_N4 = get_Bayes_factors(4)
+# if __name__ == "__main__":
+#   pvalues_N2 = get_pvalues_central_fit(2)
+#   pvalues_N4 = get_pvalues_central_fit(4)
+#   statistical_N2 = get_statistical_errors_central_fit(2)
+#   statistical_N4 = get_statistical_errors_central_fit(4)
+#   systematic_N2 = get_systematic_errors(2)
+#   systematic_N4 = get_systematic_errors(4)
+#   Bayes_factors_N2 = get_Bayes_factors(2)
+#   Bayes_factors_N4 = get_Bayes_factors(4)
