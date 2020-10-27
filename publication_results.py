@@ -18,17 +18,11 @@ def get_pvalues_central_fit(N):
 
     OUTPUTS:
     --------
-    pvalues_N2: (2, ) list of arrays of floats, containing the pvalues for the
-      N = 2 analysis. Each array is of the length of the number of GL_min cut
-      values, and the corresponding p-value to each cut is recorded. The first
-      array is for the Lambda_IR = g / (4 pi N) model, while the second is for
-      Lambda_IR = 1 / L
+    pvalues: dict of arrays of floats. Each array is of the length of the number
+      of GL_min cut values, and the corresponding p-value to each cut is recorded.
 
-    pvalues_N4: (2, ) list of arrays of floats, containing the pvalues for the
-      N = 4 analysis. Each array is of the length of the number of GL_min cut
-      values, and the corresponding p-value to each cut is recorded. The first
-      array is for the Lambda_IR = g / (4 pi N) model, while the second is for
-      Lambda_IR = 1 / L
+      > "pvalues1": Values for model 1 (Lambda_IR = g / (4 pi N))
+      > "pvalues2": Values for model 1 (Lambda_IR = 1 / L)
   """
   GL_mins = numpy.array([0.8, 1.6, 2.4, 3.2, 4, 4.8, 6.4, 8, 9.6, 12.8, 14.4, 16, 19.2, 24, 25.6, 28.8, 32])
   GL_max = 76.8
@@ -64,7 +58,9 @@ def get_pvalues_central_fit(N):
     pvalues_1[i], params1, dof = run_frequentist_analysis(h5_data_file, model1, N_s, g_s, L_s, Bbar_s, GL_min, GL_max, param_names, x0, run_bootstrap=False)
     pvalues_2[i], params2, dof = run_frequentist_analysis(h5_data_file, model2, N_s, g_s, L_s, Bbar_s, GL_min, GL_max, param_names, x0, run_bootstrap=False)
 
-  pvalues = [pvalues_1, pvalues_2]
+  pvalues = {}
+  pvalues["pvalues1"] = pvalues_1
+  pvalues["pvalues2"] = pvalues_2
 
   return pvalues
 
@@ -81,19 +77,19 @@ def get_statistical_errors_central_fit(N):
 
     OUTPUTS :
     ---------
-    results_N2: list of the form [params, params_std, m_c, m_c_error]
-      where params are the parameter estimates of the central fit, params_std
-      are the statistical errors on these estimates, found through bootstrap
-      resampling, m_c is the critcal mass, and m_c_error is the statistical
-      error on this
+    results: dictionary containing:
+      > "params": list of floats, parameter estimates of the central fit
+      > "params_std": list of floats, statistical error on these estimates
 
-    results_N4: list of the form
-      [params, params_std, m_c1, m_c1_error, m_c2, m_c2_error],
-      where params are the parameter estimates of the central fit, params_std
-      are the statistical errors on these estimates, found through bootstrap
-      resampling, m_c1 is the critcal mass estimated using the first alpha value,
-      and m_c_error is the statistical error on this. Similarly for m_c2 and
-      m_c2_error for the second alpha value
+    if N == 2:
+      > "m_c": float, Estimate of the critical mass
+      > "m_c_error": float, Statistical error on this estimate
+
+    if N == 4:
+      > "m_c1": float, Estimate of the critical mass using alpha 1
+      > "m_c_error1": float, Statistical error on this estimate using alpha1
+      > "m_c2": float, Estimate of the critical mass using alpha 2
+      > "m_c_error2": float, Statistical error on this estimate using alpha2
   """
   if N == 2:
     model = model1_1a
@@ -149,7 +145,11 @@ def get_statistical_errors_central_fit(N):
   print(f"m_c_error = {m_c_error}")
 
   if N == 2:
-    results = [params_central, numpy.std(params, axis=0), m_c, m_c_error]
+    results = {}
+    results["params_central"] = params_central
+    results["params_std"] = numpy.std(params, axis=0)
+    results["m_c"] = m_c
+    results["m_c_error"] = m_c_error
 
   if N == 4:
     alphas2 = params[..., 1]
@@ -167,7 +167,13 @@ def get_statistical_errors_central_fit(N):
     m_c2_error = max(m_c2 - minimum_m, maximum_m - m_c2)
     print(f"m_c2_error = {m_c2_error}")
 
-    results = [params_central, numpy.std(params, axis=0), m_c, m_c_error, m_c2, m_c2_error]
+    results = {}
+    results["params_central"] = params_central
+    results["params_std"] = numpy.std(params, axis=0)
+    results["m_c1"] = m_c
+    results["m_c_error1"] = m_c_error
+    results["m_c2"] = m_c2
+    results["m_c_error2"] = m_c2_error
 
   return results
 
@@ -184,19 +190,19 @@ def get_systematic_errors(N):
 
     OUTPUTS :
     ---------
-    results_N2: list of the form [params, params_std, m_c, m_c_error]
-      where params are the parameter estimates of the central fit, params_std
-      are the systematic errors on these estimates, found through bootstrap
-      resampling, m_c is the critcal mass, and m_c_error is the systematic
-      error on this
+    results: dictionary containing:
+      > "params": list of floats, parameter estimates of the central fit
+      > "params_std": list of floats, systematic error on these estimates
 
-    results_N4: list of the form
-      [params, params_std, m_c1, m_c1_error, m_c2, m_c2_error],
-      where params are the parameter estimates of the central fit, params_std
-      are the systematic errors on these estimates, found through bootstrap
-      resampling, m_c1 is the critcal mass estimated using the first alpha value,
-      and m_c_error is the systematic error on this. Similarly for m_c2 and
-      m_c2_error for the second alpha value
+    if N == 2:
+      > "m_c": float, Estimate of the critical mass
+      > "m_c_error": float, Systematic error on this estimate
+
+    if N == 4:
+      > "m_c1": float, Estimate of the critical mass using alpha 1
+      > "m_c_error1": float, Systematic error on this estimate using alpha1
+      > "m_c2": float, Estimate of the critical mass using alpha 2
+      > "m_c_error2": float, Systematic error on this estimate using alpha2
   """
   GL_mins = numpy.array([0.8, 1.6, 2.4, 3.2, 4, 4.8, 6.4, 8, 9.6, 12.8, 14.4, 16, 19.2, 24, 25.6, 28.8, 32])
   GL_max = 76.8
@@ -308,7 +314,11 @@ def get_systematic_errors(N):
   print(f"m_c_error = {m_c_error}")
 
   if N == 2:
-    results = [params_central, sys_sigmas, m_c, m_c_error]
+    results = {}
+    results["params_central"] = params_central
+    results["params_std"] = sys_sigmas
+    results["m_c"] = m_c
+    results["m_c_error"] = m_c_error
 
   if N == 4:
     alphas2 = params[..., 1]
@@ -330,12 +340,18 @@ def get_systematic_errors(N):
     m_c2_error = max(m_c2 - minimum_m, maximum_m - m_c2)
     print(f"m_c2_error = {m_c2_error}")
 
-    results = [params_central, sys_sigmas, m_c, m_c_error, m_c2, m_c2_error]
+    results = {}
+    results["params_central"] = params_central
+    results["params_std"] = sys_sigmas
+    results["m_c1"] = m_c
+    results["m_c_error1"] = m_c_error
+    results["m_c2"] = m_c2
+    results["m_c_error2"] = m_c2_error
 
   return results
 
 
-def get_Bayes_factors(N):
+def get_Bayes_factors(N, points=1000):
   """
     This function produces the Bayes Factors shown in the publication. Note that
     the accuracy of the MULTINEST algorithm improves with increased points
@@ -343,16 +359,14 @@ def get_Bayes_factors(N):
     INPUTS :
     --------
     N: int, rank of the SU(N) valued fields
+    points: int, number of points to use in the MULTINEST algorithm. The higher
+      this is the more accurate the algorithm will be, but at the price of
+      computational cost.
 
     OUTPUTS :
     ---------
     Bayes_factors2: The log of the Bayes factors of the Lambda_IR = g / (4 pi N)
       model over the Lambda_IR = 1 / L model, for N = 2 data. This is an array
-      of lenght equal to the number of GL_min cuts considered, with each element
-      containin the log Bayes factor of the corresponding GL_min cut.
-
-    Bayes_factors4: The log of the Bayes factors of the Lambda_IR = g / (4 pi N)
-      model over the Lambda_IR = 1 / L model, for N = 4 data. This is an array
       of lenght equal to the number of GL_min cuts considered, with each element
       containin the log Bayes factor of the corresponding GL_min cut.
   """
@@ -361,9 +375,6 @@ def get_Bayes_factors(N):
 
   # Where the output samples will be saved
   directory = "MULTINEST_samples/"
-
-  # How many sample points to use in the MULTINEST algorithm
-  points = 800
 
   # Use this to label different runs if you edit something
   tag = ""
@@ -421,14 +432,6 @@ def get_Bayes_factors(N):
 
   for i, GL_min in enumerate(GL_mins):
     samples, g_s, L_s, Bbar_s, m_s = load_h5_data(h5_data_file, N_s_in, g_s_in, L_s_in, Bbar_s_in, GL_min, GL_max)
-
-    dof = g_s.shape[0] - n_params
-
-    cov_matrix, different_ensemble = cov_matrix_calc(g_s, L_s, m_s, samples)
-    cov_1_2 = numpy.linalg.cholesky(cov_matrix)
-    cov_inv = numpy.linalg.inv(cov_1_2)
-
-    res_function = make_res_function(N, m_s, g_s, L_s, Bbar_s)
 
     analysis1, best_fit1 = run_pymultinest(prior_range, model1, GL_min, GL_max, n_params, directory,
                               N, g_s, Bbar_s, L_s, samples, m_s, param_names,
