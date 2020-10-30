@@ -31,7 +31,7 @@ from tqdm import tqdm
 from bayesian_functions import *
 
 
-h5_data_file = "../Finite-Size-Scaling-Analysis/h5data/Bindercrossings.h5"
+h5_data_file = "./h5data/Bindercrossings.h5"
 
 
 def get_pvalues_central_fit(N):
