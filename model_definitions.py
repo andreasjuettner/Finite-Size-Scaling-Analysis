@@ -30,7 +30,6 @@ import os
 import numpy
 import pdb
 
-import matplotlib.pyplot as plt
 from scipy.special import gammaincc
 import h5py
 
