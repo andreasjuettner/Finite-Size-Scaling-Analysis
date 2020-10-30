@@ -90,22 +90,22 @@ class UWerr():
                 else:
                     dum[i] = v[i] + h[i]
 
-                if self.varargin:
-                    D[i] = self.function(dum, self.varargin)
+                    if self.varargin:
+                        D[i] = self.function(dum, self.varargin)
 
-                else:
-                    D[i] = self.function(dum)
+                    else:
+                        D[i] = self.function(dum)
 
-                dum[i] = v[i] - h[i]
+                    dum[i] = v[i] - h[i]
 
-                if self.varargin:
-                    D[i] = D[i] - self.function(dum, self.varargin)
+                    if self.varargin:
+                        D[i] = D[i] - self.function(dum, self.varargin)
 
-                else:
-                    D[i] = D[i] - self.function(dum)
+                    else:
+                        D[i] = D[i] - self.function(dum)
 
-                dum[i] = np.array(v[i])
-                D[i] = D[i] / (2. * h[i])
+                    dum[i] = np.array(v[i])
+                    D[i] = D[i] / (2. * h[i])
 
             delta = np.dot((self.Data-v), D)
 
