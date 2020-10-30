@@ -38,7 +38,7 @@ where `N` as in `SU(N)`, `ag` the gauge coupling, `Bbar` the desired crossing po
 The required MCMC data can be donwloaded from zenodo here **UNDER CONSTRUCTION** and needs to be copied into a local subcirectory
 called `h5data/`. The data file contains data for
 
- - `N`=2,3
+ - `N`=2,4
  - `ag`=0.1,0.2,0.3,0.5,0.6
  - `L/a`=8,16,32,48,64,96,128
 
@@ -46,14 +46,25 @@ The shell script `do_Binderanalysis.sh` loops over all available data. Note the 
 
 The output will be stored in `h5data/Bindercrossings.h5` and is required by the following codes.
 
-### Frequentist analysis
+### Reproducing Plot data
+`python3 -i publication_results.py`
 
-### Bayesian analysis
+This script contains 4 functions which produce 4 distint results from the paper. All 4 functions readin data from `h5data/Bindercrossings.h5`. All functions take a single argument of `N` as in `SU(N)`. The functions are as follows:
+
+   - `get_pvalues_central_fit(N)`: This function returns the p-values used in figure 4. (e.g. the p-values of the proposed fit anzatz with the central fit across a range of `gL_{min}` values)
+   - `get_statistical_errors_central_fit(N)`: This function returns the central values and statistical errors on the model parameters under the bootstrap in the central fit.
+   - `get_systematic_errors(N)`: This function returns the central values of the model parameters in the central fit and the systematic error found by considering all fits with more than 15 degrees of freedom.
+   - `get_Bayes_factors(N, points=1000)`: This function returns `log_{10}` of the Bayes factors used in figure 4. (e.g. the Bayes factors of the proposed fit anzatz with the central fit across a range of `gL_{min}` values). The input parameter "points" describes the number of live points used in the MULTINEST algorithm. The higher this number, the higher the accuracy in the result and the higher the computational demand.
+
+The exact form of the function return values is detailed in the function doc-strings. After running `python3 -i publication_results.py`, simply call the function you wish to run with the N value you wish to use. To change the specifics, e.g. to try a non-central fit, simply edit the relevent parameters, which are defined at the start of each function.
 
 ## Required libraries
 - Python v3 [www.python.org]
 - Scipy [www.scipy.org]
-- other python standard libraries: `random`, `h5py`, `os`,`sys`, `parse`, `warnings`
+- h5py [www.h5py.org]
+- tqdm [tqdm.github.io]
+- Parse [pypi.org/project/parse]
+- other python standard libraries: `random`, `os`,`sys`, `parse`, `warnings`
 
 
 
