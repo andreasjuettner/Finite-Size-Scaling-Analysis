@@ -216,6 +216,9 @@ def run_pymultinest(prior_range, model, GL_min, GL_max, n_params, directory,
                                   f"_p{n_live_points}.pcl", "wb"))
 
     # Run the MULTINEST sampler
+    print("##################################################################")
+    print(f"Config: N = {N}, Bbar_s = [{Bbar_s[0]}, {Bbar_s[1]}],"
+          f" gL_min = {GL_min}, gL_max = {GL_max}")
     print("Initiating MULTINEST")
     pymultinest.run(likelihood_function, prior, n_params,
                     outputfiles_basename=basename, resume=False,
@@ -277,12 +280,11 @@ def run_pymultinest(prior_range, model, GL_min, GL_max, n_params, directory,
     # Make a cut down version for the purpose of quicker transfer
     analysis_small = [E, delta_E, sigma_1_range, sigma_2_range, median]
 
-    print(f"{current_process()}: saving {basename}_analysis_small.pcl")
     pickle.dump(analysis_small, open(f"{basename}_analysis_small.pcl", "wb"))
 
     if clean_files:
         # Remove the remaining saved files to conserve disk space
-        print(f"Removing files : {basename}*")
+        # print(f"Removing files : {basename}*")
         os.popen(f'rm {basename}ev.dat')
         os.popen(f'rm {basename}live.points')
         os.popen(f'rm {basename}.paramnames')

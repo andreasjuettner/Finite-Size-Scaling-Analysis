@@ -29,6 +29,7 @@ import pickle
 import os
 import numpy
 import pdb
+import warnings
 
 from scipy.special import gammaincc
 import h5py
@@ -200,9 +201,11 @@ def model1_1a(N, g, L, Bbar, alpha, f0, f1, lambduh, nu):
         float, estimate of the critical mass where the binder cumulant graph
         crosses the constant Binder value of Bbar
     """
-    return mPT_1loop(g, N) + g ** 2 *\
-                    (alpha + (g * L) ** (-1 / nu) * ((Bbar - f0) / f1)
-                        - lambduh * K1(g, N))
+    result = mPT_1loop(g, N) + g ** 2 *\
+        (alpha + (g * L) ** (-1 / nu) * ((Bbar - f0) / f1)
+            - lambduh * K1(g, N))
+
+    return result
 
 
 def model2_1a(N, g, L, Bbar, alpha, f0, f1, lambduh, nu):
@@ -365,10 +368,26 @@ def chisq_calc(x, cov_inv, model_function, res_function):
         ---------
         chisq: float, the value of the correlated chi-squared of the fit
     """
+    error = False
     # Caculate the residuals between the model and the data
-    normalized_residuals = res_function(x, cov_inv, model_function)
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter('always')
 
-    chisq = numpy.sum(normalized_residuals ** 2)
+        normalized_residuals = res_function(x, cov_inv, model_function)
+        chisq = numpy.sum(normalized_residuals ** 2)
+
+        if len(w) > 0:
+            normalized_residuals, N, g_s, L_s, Bbar_s, x =\
+                res_function(x, cov_inv, model_function, return_details=True)
+
+            # Overflow warning occurs when nu is very small so that
+            # (gL) ** -1 / nu is very large. Check that this is the case
+            print("Warning: Small nu led to very large (gL) ** -1 / nu")
+
+            assert min(g_s * L_s) ** (- 1 / x[-1]) > 10 ** 10
+        
+        # if error:
+            # pdb.set_trace()
 
     return chisq
 
@@ -421,7 +440,7 @@ def make_res_function(N, m_s, g_s, L_s, Bbar_s):
         res_function: Used in other functions defined in this publication to
         to calculate the normalized residuals between the data and the fit
     """
-    def res_function(x, cov_inv, model_function):
+    def res_function(x, cov_inv, model_function, return_details=False):
         # Caculate the residuals between the model and the data
         predictions = model_function(N, g_s, L_s, Bbar_s, *x)
 
@@ -429,6 +448,10 @@ def make_res_function(N, m_s, g_s, L_s, Bbar_s):
 
         normalized_residuals = numpy.dot(cov_inv, residuals)
 
-        return normalized_residuals
+        if return_details:
+            return normalized_residuals, N, g_s, L_s, Bbar_s, x
+
+        else:
+            return normalized_residuals
 
     return res_function

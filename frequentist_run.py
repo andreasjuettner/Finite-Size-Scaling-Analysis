@@ -26,13 +26,14 @@
 ###############################################################################
 
 from model_definitions import *
-from scipy.optimize import minimize
+from scipy.optimize import minimize, least_squares
 from scipy.linalg import logm
 from tqdm import tqdm
+import warnings
 
 
 def run_frequentist_analysis(input_h5_file, model, N_s, g_s, L_s, Bbar_s_in,
-                             GL_min, GL_max, param_names, x0, method="BFGS",
+                             GL_min, GL_max, param_names, x0, method="lm",
                              no_samples=500, run_bootstrap=True,
                              print_info=True):
     """
@@ -93,10 +94,13 @@ def run_frequentist_analysis(input_h5_file, model, N_s, g_s, L_s, Bbar_s_in,
 
     res_function = make_res_function(N, m_s, g_s, L_s, Bbar_s)
 
-    # Using scipy.
+    # Using scipy.optimize.least_squares
     if method == "least_squares":
-        res = least_squares(res_function, x0, bounds=bounds,
-                            args=(cov_inv, model), method=method)
+        res = least_squares(res_function, x0, args=(cov_inv, model))
+
+    if method == "lm":
+        res = least_squares(res_function, x0, args=(cov_inv, model),
+                            method="lm")
 
     # Using scipy.optimize.minimize
     if method in ["dogbox", "Nelder-Mead", "Powell", "CG", "BFGS", "COBYLA"]:
@@ -110,7 +114,7 @@ def run_frequentist_analysis(input_h5_file, model, N_s, g_s, L_s, Bbar_s_in,
     param_central = res.x
 
     if print_info:
-        print("###########################################################")
+        print("##############################################################")
         print(f"Config: N = {N}, Bbar_s = [{Bbar_s_in[0]}, {Bbar_s_in[1]}],"
               f" gL_min = {GL_min}, gL_max = {GL_max}")
         print(f"chisq = {chisq}")
@@ -127,17 +131,23 @@ def run_frequentist_analysis(input_h5_file, model, N_s, g_s, L_s, Bbar_s_in,
 
             res_function = make_res_function(N_s[0], m_s, g_s, L_s, Bbar_s)
 
+            # with warnings.catch_warnings():
+            #     warnings.simplefilter("error", category=RuntimeWarning)
+
             if method == "least_squares":
-                res = least_squares(res_function, x0, bounds=bounds,
-                                    args=(cov_inv, model), method=method)
+                res = least_squares(res_function, x0, args=(cov_inv, model))
+
+            if method == "lm":
+                res = least_squares(res_function, x0, args=(cov_inv, model),
+                                    method=method)
 
             # Using scipy.optimize.minimize
             if method in ["dogbox", "Nelder-Mead", "Powell", "CG", "BFGS",
-                          "COBYLA"]:
+                        "COBYLA"]:
                 def dummy_func(x, y, z):
                     return numpy.sum(res_function(x, y, z) ** 2)
                 res = minimize(dummy_func, x0, args=(cov_inv, model),
-                               method=method)
+                            method=method)
 
             param_estimates[i] = numpy.array(res.x)
 
