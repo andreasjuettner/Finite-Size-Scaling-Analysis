@@ -29,6 +29,7 @@ from frequentist_run import run_frequentist_analysis
 from model_definitions import *
 from tqdm import tqdm
 from bayesian_functions import *
+import matplotlib.pyplot as plt
 
 
 h5_data_file = "./h5data/Bindercrossings.h5"
@@ -164,9 +165,16 @@ def get_statistical_errors_central_fit(N):
                                  run_bootstrap=False)
 
     # Run with all the bootstrap samples
-    pvalue, params, dof, sigmas =\
+    pvalue, params, dof =\
         run_frequentist_analysis(h5_data_file, model, N_s, g_s, L_s, Bbar_s,
                                  GL_min, GL_max, param_names, x0)
+
+    sigmas = numpy.std(params, axis=0)
+
+    for i, param in enumerate(param_names):
+        print(f"{param} = {params_central[i]} +- {sigmas[i]}")
+        # plt.hist(params[:, i])
+        # plt.show()
 
     # Calculate the value of the non-perterbative critical mass for g = 0.1 and
     # it's statistical error
@@ -180,12 +188,7 @@ def get_statistical_errors_central_fit(N):
 
     m_cs = mPT_1loop(g, N) + g ** 2 * (alphas - lambduhs * K1(g, N))
 
-    minimum_m = numpy.min(m_cs)
-    maximum_m = numpy.max(m_cs)
-
-    print(f"m_c_range = {[minimum_m, maximum_m]}")
-
-    m_c_error = max(m_c - minimum_m, maximum_m - m_c)
+    m_c_error = numpy.std(m_cs)
     print(f"m_c_error = {m_c_error}")
 
     if N == 2:
@@ -204,12 +207,7 @@ def get_statistical_errors_central_fit(N):
 
         m_c2s = mPT_1loop(g, N) + g ** 2 * (alphas2 - lambduhs * K1(g, N))
 
-        minimum_m = numpy.min(m_c2s)
-        maximum_m = numpy.max(m_c2s)
-
-        print(f"m_c2_range = {[minimum_m, maximum_m]}")
-
-        m_c2_error = max(m_c2 - minimum_m, maximum_m - m_c2)
+        m_c2_error = numpy.std(m_c2s)
         print(f"m_c2_error = {m_c2_error}")
 
         results = {}
@@ -321,6 +319,7 @@ def get_systematic_errors(N):
     best_Bbar_index = numpy.argmax(pvalues[:, best])
     best_Bbar = Bbar_list[best_Bbar_index]
 
+    print("##################################################################")
     print("BEST RESULT")
     print(f"Bbar_s = {best_Bbar}")
     print(f"GL_min = {GL_mins[best]}")
@@ -350,7 +349,7 @@ def get_systematic_errors(N):
                             params[best_Bbar_index, best, i] -
                             minimum)
 
-        print(f"{param} = {param} +- {sys_sigmas[i]}")
+        print(f"{param} = {params_central[i]} +- {sys_sigmas[i]}")
 
     # Find the systematic variation in the critical mass
     g = 0.1
@@ -529,6 +528,12 @@ def get_Bayes_factors(N, points=1000):
 
     return Bayes_factors
 
+
+# warnings.simplefilter("error", category=RuntimeWarning)
+
+# get_Bayes_factors(2, points=200)
+# get_statistical_errors_central_fit(2)
+y = get_statistical_errors_central_fit(4)['params_central']
 
 # if __name__ == "__main__":
 #   pvalues_N2 = get_pvalues_central_fit(2)
