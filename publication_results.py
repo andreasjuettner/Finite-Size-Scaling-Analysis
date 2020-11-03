@@ -335,14 +335,13 @@ def get_systematic_errors(N):
 
     # Find the most extreme values of the parameter estimates that are deemed
     # acceptable
+    sys_sigmas = numpy.zeros(n_params)
+
     for i, param in enumerate(param_names):
         param_small = params[..., i]
         minimum = numpy.min(param_small[acceptable])
         maximum = numpy.max(param_small[acceptable])
 
-    sys_sigmas = numpy.zeros(n_params)
-
-    for i, param in enumerate(param_names):
         # Define the systematic error bar by the largest deviation from the
         # central fit by an acceptable fit
         sys_sigmas[i] = max(maximum - params[best_Bbar_index, best, i],
@@ -533,7 +532,8 @@ def get_Bayes_factors(N, points=1000):
 
 # get_Bayes_factors(2, points=200)
 # get_statistical_errors_central_fit(2)
-y = get_statistical_errors_central_fit(4)['params_central']
+# y = get_statistical_errors_central_fit(2)['params_central']
+get_systematic_errors(4)
 
 # if __name__ == "__main__":
 #   pvalues_N2 = get_pvalues_central_fit(2)
