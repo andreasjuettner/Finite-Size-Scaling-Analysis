@@ -28,7 +28,6 @@
 import pickle
 import os
 import numpy
-import pdb
 import warnings
 
 from scipy.special import gammaincc
@@ -370,6 +369,8 @@ def chisq_calc(x, cov_inv, model_function, res_function):
     """
     error = False
     # Caculate the residuals between the model and the data
+
+    # Use the warnings module to catch overflow warning
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter('always')
 
@@ -384,10 +385,8 @@ def chisq_calc(x, cov_inv, model_function, res_function):
             # (gL) ** -1 / nu is very large. Check that this is the case
             print("Warning: Small nu led to very large (gL) ** -1 / nu")
 
+            # This is to check the warning is indeed as expected
             assert min(g_s * L_s) ** (- 1 / x[-1]) > 10 ** 10
-        
-        # if error:
-            # pdb.set_trace()
 
     return chisq
 

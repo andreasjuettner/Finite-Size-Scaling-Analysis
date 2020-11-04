@@ -151,11 +151,6 @@ def run_frequentist_analysis(input_h5_file, model, N_s, g_s, L_s, Bbar_s_in,
 
             param_estimates[i] = numpy.array(res.x)
 
-        sigmas = numpy.std(param_estimates, axis=0)
-
-        for i, param in enumerate(param_names):
-            print(f"{param} = {param_central[i]} +- {sigmas[i]}")
-
-        return p, param_estimates, dof, sigmas
+        return p, param_estimates, dof
 
     return p, res.x, dof
