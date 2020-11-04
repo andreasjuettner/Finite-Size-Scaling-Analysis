@@ -533,7 +533,7 @@ def get_Bayes_factors(N, points=1000):
 # get_Bayes_factors(2, points=200)
 # get_statistical_errors_central_fit(2)
 # y = get_statistical_errors_central_fit(2)['params_central']
-get_systematic_errors(4)
+#get_systematic_errors(4)
 
 # if __name__ == "__main__":
 #   pvalues_N2 = get_pvalues_central_fit(2)
