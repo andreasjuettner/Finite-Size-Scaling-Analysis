@@ -526,8 +526,6 @@ def get_Bayes_factors(N, points=1000):
     Bayes_factors = Bayes_factors / numpy.log(10)
 
     return Bayes_factors
-<<<<<<< HEAD
-=======
 
 
 # warnings.simplefilter("error", category=RuntimeWarning)
@@ -546,4 +544,3 @@ def get_Bayes_factors(N, points=1000):
 #   systematic_N4 = get_systematic_errors(4)
 #   Bayes_factors_N2 = get_Bayes_factors(2)
 #   Bayes_factors_N4 = get_Bayes_factors(4)
->>>>>>> 0fa0a51fb7c197595213a80ae3fbb374e79d5044
