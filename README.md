@@ -64,7 +64,7 @@ The exact form of the function return values is detailed in the function doc-str
 - h5py [www.h5py.org]
 - tqdm [tqdm.github.io]
 - Parse [pypi.org/project/parse]
-- other python standard libraries: `random`, `os`,`sys`, `parse`, `warnings`
+- other python standard libraries: `random`, `os`,`sys`, `warnings`
 
 
 
