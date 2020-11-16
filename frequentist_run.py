@@ -123,7 +123,7 @@ def run_frequentist_analysis(input_h5_file, model, N_s, g_s, L_s, Bbar_s_in,
         print(f"dof = {dof}")
 
     # If the pvalue is acceptable, run a bootstrap to get a statistical error
-    if p > 0.05 and run_bootstrap:
+    if run_bootstrap:
         param_estimates = numpy.zeros((no_samples, n_params))
 
         for i in tqdm(range(no_samples)):
@@ -143,11 +143,11 @@ def run_frequentist_analysis(input_h5_file, model, N_s, g_s, L_s, Bbar_s_in,
 
             # Using scipy.optimize.minimize
             if method in ["dogbox", "Nelder-Mead", "Powell", "CG", "BFGS",
-                        "COBYLA"]:
+                          "COBYLA"]:
                 def dummy_func(x, y, z):
                     return numpy.sum(res_function(x, y, z) ** 2)
                 res = minimize(dummy_func, x0, args=(cov_inv, model),
-                            method=method)
+                               method=method)
 
             param_estimates[i] = numpy.array(res.x)
 
