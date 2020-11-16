@@ -25,7 +25,7 @@
 # field theory" https://arxiv.org/abs/2009.14768
 ###############################################################################
 
-from frequentist_run2 import run_frequentist_analysis
+from frequentist_run import run_frequentist_analysis
 from model_definitions import *
 from tqdm import tqdm
 from bayesian_functions import *
