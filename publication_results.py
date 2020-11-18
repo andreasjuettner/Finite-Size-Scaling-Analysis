@@ -268,7 +268,7 @@ def get_statistical_errors_central_fit(N, model_name="model1", GL_min_in=None,
     return results
 
 
-def get_systematic_errors(N, model="model1"):
+def get_systematic_errors(N, model_name="model1"):
     """
         This function gets the systematic error bands (and central fit values)
         for the model parameters, and the value of the critical mass at g=0.1
@@ -277,7 +277,7 @@ def get_systematic_errors(N, model="model1"):
         INPUTS :
         --------
         N: int, rank of the SU(N) valued fields
-        model: string, either "model1" or "model2". Determines whether to look
+        model_name: string, either "model1" or "model2". Determines whether to look
             at either Lambda_IR = g / 4 pi N (model1) or
             Lambda_IR = 1 / L (model2)
 
@@ -307,10 +307,10 @@ def get_systematic_errors(N, model="model1"):
     GL_max = 76.8
 
     if N == 2:
-        if model == "model1":
+        if model_name == "model1":
             model = model1_1a
 
-        if model == "model2":
+        if model_name == "model2":
             model = model2_1a
 
         N_s = [2]
@@ -319,10 +319,10 @@ def get_systematic_errors(N, model="model1"):
         param_names = ["alpha", "f0", "f1", "beta", "nu"]
 
     if N == 4:
-        if model == "model1":
+        if model_name == "model1":
             model = model1_2a
 
-        if model == "model2":
+        if model_name == "model2":
             model = model2_2a
 
         N_s = [4]
@@ -373,6 +373,7 @@ def get_systematic_errors(N, model="model1"):
     print(f"GL_min = {GL_mins[best]}")
     print(f"pvalue : {pvalues[best_Bbar_index, best]}")
     print(f"dof : {dofs[best_Bbar_index, best]}")
+    print("##################################################################")
 
     params_central = params[best_Bbar_index, best]
 
@@ -404,75 +405,81 @@ def get_systematic_errors(N, model="model1"):
         print(f"{param} = {params_central[i]} +- {sys_sigmas[i]}")
 
     # Find the systematic variation in the critical mass
-    g = 0.1
-    m_c = mPT_1loop(g, N) + g ** 2 * (params[best_Bbar_index, best, 0] -
-                                      params[best_Bbar_index, best, -2] *
-                                      K1(g, N))
-    if N == 4:
-        print("Critical Mass using alpha1:")
+    if model_name == "model1":
+        g = 0.1
+        m_c = mPT_1loop(g, N) + g ** 2 * (params[best_Bbar_index, best, 0] -
+                                          params[best_Bbar_index, best, -2] *
+                                          K1(g, N))
+        if N == 4:
+            print("Critical Mass using alpha1:")
 
-    print(f"m_c = {m_c}")
+        print(f"m_c = {m_c}")
 
-    alphas = params[..., 0]
-    betas = params[..., -2]
+        alphas = params[..., 0]
+        betas = params[..., -2]
 
-    # Only include parameter estimates from those fits that are acceptable
-    alphas = alphas[acceptable]
-    betas = betas[acceptable]
+        # Only include parameter estimates from those fits that are acceptable
+        alphas = alphas[acceptable]
+        betas = betas[acceptable]
 
-    m_cs = mPT_1loop(g, N) + g ** 2 * (alphas - betas * K1(g, N))
+        m_cs = mPT_1loop(g, N) + g ** 2 * (alphas - betas * K1(g, N))
 
-    minimum_m = numpy.min(m_cs)
-    maximum_m = numpy.max(m_cs)
+        minimum_m = numpy.min(m_cs)
+        maximum_m = numpy.max(m_cs)
 
-    print(f"m_c_range = {[minimum_m, maximum_m]}")
-
-    m_c_error = max(m_c - minimum_m, maximum_m - m_c)
-    print(f"m_c_error = {m_c_error}")
+        m_c_error = max(m_c - minimum_m, maximum_m - m_c)
+        print(f"m_c_error = {m_c_error}")
 
     if N == 2:
         results = {}
         results["params_central"] = params_central
         results["params_std"] = sys_sigmas
-        results["m_c"] = m_c
-        results["m_c_error"] = m_c_error
+
+        if model_name == "model1":
+            results["m_c"] = m_c
+            results["m_c_error"] = m_c_error
 
     if N == 4:
-        alphas2 = params[..., 1]
-
-        # Only include parameter estimates from those fits that are acceptable
-        alphas2 = alphas2[acceptable]
-
-        # Calculate using alpha2
-        m_c2 = mPT_1loop(g, N) + g ** 2 * (params[best_Bbar_index, best, 1] -
-                                           params[best_Bbar_index, best, -2] *
-                                           K1(g, N))
-        print("Critical Mass using alpha2:")
-
-        print(f"m_c2 = {m_c2}")
-
-        m_c2s = mPT_1loop(g, N) + g ** 2 * (alphas2 - betas * K1(g, N))
-
-        minimum_m = numpy.min(m_c2s)
-        maximum_m = numpy.max(m_c2s)
-
-        print(f"m_c2_range = {[minimum_m, maximum_m]}")
-
-        m_c2_error = max(m_c2 - minimum_m, maximum_m - m_c2)
-        print(f"m_c2_error = {m_c2_error}")
-
         results = {}
         results["params_central"] = params_central
         results["params_std"] = sys_sigmas
-        results["m_c1"] = m_c
-        results["m_c_error1"] = m_c_error
-        results["m_c2"] = m_c2
-        results["m_c_error2"] = m_c2_error
+
+        if model_name == "model1":
+            alphas2 = params[..., 1]
+
+            # Only include parameter estimates from those fits that are
+            # acceptable
+            alphas2 = alphas2[acceptable]
+
+            # Calculate using alpha2
+            m_c2 = mPT_1loop(g, N) + g ** 2 * \
+                (params[best_Bbar_index, best, 1] -
+                 params[best_Bbar_index, best, -2] *
+                 K1(g, N))
+
+            print("Critical Mass using alpha2:")
+
+            print(f"m_c2 = {m_c2}")
+
+            m_c2s = mPT_1loop(g, N) + g ** 2 * (alphas2 - betas * K1(g, N))
+
+            minimum_m = numpy.min(m_c2s)
+            maximum_m = numpy.max(m_c2s)
+
+            print(f"m_c2_range = {[minimum_m, maximum_m]}")
+
+            m_c2_error = max(m_c2 - minimum_m, maximum_m - m_c2)
+            print(f"m_c2_error = {m_c2_error}")
+
+            results["m_c1"] = m_c
+            results["m_c_error1"] = m_c_error
+            results["m_c2"] = m_c2
+            results["m_c_error2"] = m_c2_error
 
     return results
 
 
-def get_Bayes_factors(N, points=1000):
+def get_Bayes_factors(N, points=5000):
     """
         This function produces the Bayes Factors shown in the publication.
 
@@ -482,7 +489,9 @@ def get_Bayes_factors(N, points=1000):
         points: int, number of points to use in the MULTINEST algorithm. The
             higher
             this is the more accurate the algorithm will be, but at the price
-            of computational cost.
+            of computational cost. To produce the plot of the Bayes factor
+            against gL_min 5000 points were used. For the posterior plots 1000
+            points were used.
 
         OUTPUTS :
         ---------
@@ -582,19 +591,3 @@ def get_Bayes_factors(N, points=1000):
     Bayes_factors = Bayes_factors / numpy.log(10)
 
     return Bayes_factors
-
-
-# get_Bayes_factors(2, points=10)
-# get_statistical_errors_central_fit(2)
-# y = get_statistical_errors_central_fit(2)['params_central']
-# get_systematic_errors(4)
-
-# if __name__ == "__main__":
-#   pvalues_N2 = get_pvalues_central_fit(2)
-#   pvalues_N4 = get_pvalues_central_fit(4)
-#   statistical_N2 = get_statistical_errors_central_fit(2)
-#   statistical_N4 = get_statistical_errors_central_fit(4)
-#   systematic_N2 = get_systematic_errors(2)
-#   systematic_N4 = get_systematic_errors(4)
-#   Bayes_factors_N2 = get_Bayes_factors(2)
-#   Bayes_factors_N4 = get_Bayes_factors(4)

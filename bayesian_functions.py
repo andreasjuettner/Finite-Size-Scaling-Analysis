@@ -216,9 +216,10 @@ def run_pymultinest(prior_range, model, GL_min, GL_max, n_params, directory,
                                   f"_p{n_live_points}.pcl", "wb"))
 
     # Run the MULTINEST sampler
+    Bbar_s_set = list(set(Bbar_s))
     print("##################################################################")
-    print(f"Config: N = {N}, Bbar_s = [{Bbar_s[0]}, {Bbar_s[1]}],"
-          f" gL_min = {GL_min}, gL_max = {GL_max}")
+    print(f"Config: N = {N}, Bbar_s = [{Bbar_s_set[0]}, {Bbar_s_set[1]}],"
+          f" gL_min = {GL_min}, gL_max = {GL_max}, model = {model.__name__}")
     print("Initiating MULTINEST")
     pymultinest.run(likelihood_function, prior, n_params,
                     outputfiles_basename=basename, resume=False,
