@@ -131,9 +131,6 @@ def run_frequentist_analysis(input_h5_file, model, N_s, g_s, L_s, Bbar_s_in,
 
             res_function = make_res_function(N_s[0], m_s, g_s, L_s, Bbar_s)
 
-            # with warnings.catch_warnings():
-            #     warnings.simplefilter("error", category=RuntimeWarning)
-
             if method == "least_squares":
                 res = least_squares(res_function, x0, args=(cov_inv, model))
 

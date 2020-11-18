@@ -37,8 +37,8 @@ h5_data_file = "./h5data/Bindercrossings.h5"
 
 def get_pvalues_central_fit(N):
     """
-        This function will reproduce the p-value data for the central fit as
-        defined in the publication
+        This function will reproduce the p-value data against the gL_min cut
+        for the central fit.
 
         INPUTS :
         --------
@@ -89,6 +89,7 @@ def get_pvalues_central_fit(N):
             run_frequentist_analysis(h5_data_file, model1, N_s, g_s, L_s,
                                      Bbar_s, GL_min, GL_max, param_names, x0,
                                      run_bootstrap=False)
+
         pvalues_2[i], params2, dof = \
             run_frequentist_analysis(h5_data_file, model2, N_s, g_s, L_s,
                                      Bbar_s, GL_min, GL_max, param_names, x0,
@@ -116,9 +117,9 @@ def get_statistical_errors_central_fit(N, model_name="model1", GL_min_in=None,
         model_name: string, either "model1" or "model2". Determines whether to
             look at the central fit for either Lambda_IR = g / 4 pi N (model1)
             or Lambda_IR = 1 / L (model2)
-        GL_min: float, the cut on the minimum value of g * L in the fit. If
-            this is left as None, then the central fits for each model are used
-            (GL_min = 12.8 for model1 for example)
+        GL_min: float, the cut on the minimum value of (ag) * (L / a) in the
+            fit. If this is left as None, then the central fits for each model
+            are used (GL_min = 12.8 for model1 for example)
         Bbar_s: (2, ) list of floats. The two Bbar values to be used in the
             fit. If left as None, then the central fits for each model are used
             (Bbar_s = [0.52, 0.53] for model1 with N=2 for example)
@@ -130,15 +131,17 @@ def get_statistical_errors_central_fit(N, model_name="model1", GL_min_in=None,
             > "params_std": list of floats, statistical error on these
                 estimates
 
-        if N == 2:
-            > "m_c": float, Estimate of the critical mass
+        if N == 2 and model_name == "model1":
+            > "m_c": float, Estimate of the critical mass at g = 0.1
             > "m_c_error": float, Statistical error on this estimate
 
-        if N == 4:
-            > "m_c1": float, Estimate of the critical mass using alpha 1
+        if N == 4 and model_name == "model1":
+            > "m_c1": float, Estimate of the critical mass using alpha 1 at
+                g = 0.1
             > "m_c_error1": float, Statistical error on this estimate using
                 alpha1
-            > "m_c2": float, Estimate of the critical mass using alpha 2
+            > "m_c2": float, Estimate of the critical mass using alpha 2 at
+                g = 0.1
             > "m_c_error2": float, Statistical error on this estimate using
                 alpha2
     """
@@ -270,15 +273,15 @@ def get_statistical_errors_central_fit(N, model_name="model1", GL_min_in=None,
 
 def get_systematic_errors(N, model_name="model1"):
     """
-        This function gets the systematic error bands (and central fit values)
-        for the model parameters, and the value of the critical mass at g=0.1
-        quoted in the publication.
+        This function calculates the systematic error bands (and central fit
+        values) for the model parameters, and the value of the critical mass at
+        g = 0.1 quoted in the publication.
 
         INPUTS :
         --------
         N: int, rank of the SU(N) valued fields
-        model_name: string, either "model1" or "model2". Determines whether to look
-            at either Lambda_IR = g / 4 pi N (model1) or
+        model_name: string, either "model1" or "model2". Determines whether to
+            look at either Lambda_IR = g / 4 pi N (model1) or
             Lambda_IR = 1 / L (model2)
 
         OUTPUTS :
@@ -287,11 +290,11 @@ def get_systematic_errors(N, model_name="model1"):
             > "params": list of floats, parameter estimates of the central fit
             > "params_std": list of floats, systematic error on these estimates
 
-        if N == 2:
+        if N == 2 and model_name == "model1":
             > "m_c": float, Estimate of the critical mass
             > "m_c_error": float, Systematic error on this estimate
 
-        if N == 4:
+        if N == 4 and model_name == "model2":
             > "m_c1": float, Estimate of the critical mass using alpha 1
             > "m_c_error1": float, Systematic error on this estimate using
                 alpha1
@@ -487,19 +490,18 @@ def get_Bayes_factors(N, points=5000):
         --------
         N: int, rank of the SU(N) valued fields
         points: int, number of points to use in the MULTINEST algorithm. The
-            higher
-            this is the more accurate the algorithm will be, but at the price
-            of computational cost. To produce the plot of the Bayes factor
-            against gL_min 5000 points were used. For the posterior plots 1000
-            points were used.
+            higher this is the more accurate the algorithm will be, but at the
+            price of computational cost. To produce the plot of the Bayes
+            factor against gL_min 5000 points were used. For the posterior
+            plots 1000 points were used.
 
         OUTPUTS :
         ---------
-        Bayes_factors: The log of the Bayes factors of the
-        Lambda_IR = g / (4 pi N) model over the Lambda_IR = 1 / L model, for
-        N = 2 data. This is an array of lenght equal to the number of GL_min#
-        cuts considered, with each element containin the log Bayes factor of
-        the corresponding GL_min cut.
+        Bayes_factors: The log10 of the Bayes factor of the
+            Lambda_IR = g / (4 pi N) model over the Lambda_IR = 1 / L model.
+            This is an array of lenght equal to the number of GL_min cuts
+            considered, with each element containin the log Bayes factor of the
+            corresponding GL_min cut.
     """
     GL_mins = numpy.array([0.8, 1.6, 2.4, 3.2, 4, 4.8, 6.4, 8, 9.6, 12.8, 14.4,
                            16, 19.2, 24, 25.6, 28.8, 32])

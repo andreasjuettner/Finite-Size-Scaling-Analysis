@@ -128,7 +128,7 @@ def run_pymultinest(prior_range, model, GL_min, GL_max, n_params, directory,
             samples will be deleted after completion of the algorithm. This is
             useful for reducing hard-drive load if doing many runs
         sampling_efficiency: See MULTINEST documentation. float between 0 and
-            1.  Here, 0.3 is used =as this is the reccomended value for
+            1.  Here, 0.3 is used as this is the reccomended value for
             Bayesian Evidence
         return_analysis_small: Bool, if True return only key values of the run,
             explicitly... [E, delta_E, sigma_1_range, sigma_2_range, median],
@@ -285,7 +285,6 @@ def run_pymultinest(prior_range, model, GL_min, GL_max, n_params, directory,
 
     if clean_files:
         # Remove the remaining saved files to conserve disk space
-        # print(f"Removing files : {basename}*")
         os.popen(f'rm {basename}ev.dat')
         os.popen(f'rm {basename}live.points')
         os.popen(f'rm {basename}.paramnames')
