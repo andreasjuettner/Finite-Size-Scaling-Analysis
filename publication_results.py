@@ -67,7 +67,7 @@ def get_pvalues_central_fit(N):
 
         model1 = model1_1a
         model2 = model2_1a
-        param_names = ["alpha", "f0", "f1", "lambduh", "nu"]
+        param_names = ["alpha", "f0", "f1", "beta", "nu"]
 
     if N == 4:
         N_s = [4]
@@ -79,7 +79,7 @@ def get_pvalues_central_fit(N):
 
         model1 = model1_2a
         model2 = model2_2a
-        param_names = ["alpha1", "alpha2", "f0", "f1", "lambduh", "nu"]
+        param_names = ["alpha1", "alpha2", "f0", "f1", "beta", "nu"]
 
     pvalues_1 = numpy.zeros(len(GL_mins))
     pvalues_2 = numpy.zeros(len(GL_mins))
@@ -103,7 +103,7 @@ def get_pvalues_central_fit(N):
     return pvalues
 
 
-def get_statistical_errors_central_fit(N, model="model1", GL_min_in=None,
+def get_statistical_errors_central_fit(N, model_name="model1", GL_min_in=None,
                                        Bbar_s_in=None):
     """
         This function gets the statistical error bands (and central fit values)
@@ -113,9 +113,9 @@ def get_statistical_errors_central_fit(N, model="model1", GL_min_in=None,
         INPUTS :
         --------
         N: int, rank of the SU(N) valued fields
-        model: string, either "model1" or "model2". Determines whether to look
-            at the central fit for either Lambda_IR = g / 4 pi N (model1) or
-            Lambda_IR = 1 / L (model2)
+        model_name: string, either "model1" or "model2". Determines whether to
+            look at the central fit for either Lambda_IR = g / 4 pi N (model1)
+            or Lambda_IR = 1 / L (model2)
         GL_min: float, the cut on the minimum value of g * L in the fit. If
             this is left as None, then the central fits for each model are used
             (GL_min = 12.8 for model1 for example)
@@ -147,27 +147,27 @@ def get_statistical_errors_central_fit(N, model="model1", GL_min_in=None,
     GL_max = 76.8
 
     if N == 2:
-        if model == "model1":
+        if model_name == "model1":
             model = model1_1a
             GL_min = 12.8
             Bbar_s = [0.52, 0.53]
 
-        if model == "model2":
+        if model_name == "model2":
             model = model2_1a
             GL_min = 32.0
             Bbar_s = [0.51, 0.52]
 
         N = 2
         N_s = [N]
-        param_names = ["alpha", "f0", "f1", "lambduh", "nu"]
+        param_names = ["alpha", "f0", "f1", "beta", "nu"]
         x0 = [0, 0.5431, -0.03586, 1, 2 / 3]  # EFT values
 
     if N == 4:
-        if model == "model1":
+        if model_name == "model1":
             model = model1_2a
-            GL_min = 24.0
+            GL_min = 12.8
 
-        if model == "model2":
+        if model_name == "model2":
             model = model2_2a
             GL_min = 24.0
 
@@ -175,7 +175,7 @@ def get_statistical_errors_central_fit(N, model="model1", GL_min_in=None,
         N = 4
         N_s = [N]
         Bbar_s = [0.42, 0.43]
-        param_names = ["alpha1", "alpha2", "f0", "f1", "lambduh", "nu"]
+        param_names = ["alpha1", "alpha2", "f0", "f1", "beta", "nu"]
 
     # Set GL_min and Bbar_s if given
     if GL_min_in is not None:
@@ -193,7 +193,8 @@ def get_statistical_errors_central_fit(N, model="model1", GL_min_in=None,
     # Run with all the bootstrap samples
     pvalue, params, dof =\
         run_frequentist_analysis(h5_data_file, model, N_s, g_s, L_s, Bbar_s,
-                                 GL_min, GL_max, param_names, x0, print_info=False)
+                                 GL_min, GL_max, param_names, x0,
+                                 print_info=False)
 
     sigmas = numpy.zeros(len(params_central))
     no_samples = params.shape[0]
@@ -208,17 +209,21 @@ def get_statistical_errors_central_fit(N, model="model1", GL_min_in=None,
 
     # Calculate the value of the non-perterbative critical mass for g = 0.1 and
     # it's statistical error
-    if model == "model1":
+    if model_name == "model1":
         g = 0.1
 
-        m_c = mPT_1loop(g, N) + g ** 2 * (params_central[0] - params_central[-2] *
-                                          K1(g, N))
+        m_c = mPT_1loop(g, N) + g ** 2 * (params_central[0] -
+                                          params_central[-2] * K1(g, N))
+
+        if N == 4:
+            print("Critical Mass using alpha1:")
+
         print(f"m_c = {m_c}")
 
         alphas = params[..., 0]
-        lambduhs = params[..., -2]
+        betas = params[..., -2]
 
-        m_cs = mPT_1loop(g, N) + g ** 2 * (alphas - lambduhs * K1(g, N))
+        m_cs = mPT_1loop(g, N) + g ** 2 * (alphas - betas * K1(g, N))
 
         m_c_error = numpy.sqrt(numpy.sum((m_cs - m_c) ** 2) /
                                no_samples)
@@ -230,7 +235,7 @@ def get_statistical_errors_central_fit(N, model="model1", GL_min_in=None,
         results["params_central"] = params_central
         results["params_std"] = sigmas
 
-        if model == "model1":
+        if model_name == "model1":
             results["m_c"] = m_c
             results["m_c_error"] = m_c_error
 
@@ -241,12 +246,14 @@ def get_statistical_errors_central_fit(N, model="model1", GL_min_in=None,
 
         alphas2 = params[..., 1]
 
-        if model == "model1":
+        if model_name == "model1":
             m_c2 = mPT_1loop(g, N) + g ** 2 * (params_central[1] -
                                                params_central[-2] * K1(g, N))
+
+            print("Critical Mass using alpha2:")
             print(f"m_c2 = {m_c2}")
 
-            m_c2s = mPT_1loop(g, N) + g ** 2 * (alphas2 - lambduhs * K1(g, N))
+            m_c2s = mPT_1loop(g, N) + g ** 2 * (alphas2 - betas * K1(g, N))
 
             m_c2_error = numpy.sqrt(numpy.sum((m_c2s - m_c2) ** 2) /
                                     no_samples)
@@ -309,7 +316,7 @@ def get_systematic_errors(N, model="model1"):
         N_s = [2]
         Bbar_s = [0.51, 0.52, 0.53, 0.54, 0.55, 0.56, 0.57, 0.58, 0.59]
         x0 = [0, 0.5431, -0.03586, 1, 2 / 3]  # EFT values
-        param_names = ["alpha", "f0", "f1", "lambduh", "nu"]
+        param_names = ["alpha", "f0", "f1", "beta", "nu"]
 
     if N == 4:
         if model == "model1":
@@ -321,7 +328,7 @@ def get_systematic_errors(N, model="model1"):
         N_s = [4]
         Bbar_s = [0.42, 0.43, 0.44, 0.45, 0.46, 0.47]
         x0 = [0, 0, 0.4459, -0.02707, 1, 2 / 3]  # EFT values
-        param_names = ["alpha1", "alpha2", "f0", "f1", "lambduh", "nu"]
+        param_names = ["alpha1", "alpha2", "f0", "f1", "beta", "nu"]
 
     # The minimum number of degrees of freedom needed to consider a fit valid
     min_dof = 15
@@ -401,16 +408,19 @@ def get_systematic_errors(N, model="model1"):
     m_c = mPT_1loop(g, N) + g ** 2 * (params[best_Bbar_index, best, 0] -
                                       params[best_Bbar_index, best, -2] *
                                       K1(g, N))
+    if N == 4:
+        print("Critical Mass using alpha1:")
+
     print(f"m_c = {m_c}")
 
     alphas = params[..., 0]
-    lambduhs = params[..., -2]
+    betas = params[..., -2]
 
     # Only include parameter estimates from those fits that are acceptable
     alphas = alphas[acceptable]
-    lambduhs = lambduhs[acceptable]
+    betas = betas[acceptable]
 
-    m_cs = mPT_1loop(g, N) + g ** 2 * (alphas - lambduhs * K1(g, N))
+    m_cs = mPT_1loop(g, N) + g ** 2 * (alphas - betas * K1(g, N))
 
     minimum_m = numpy.min(m_cs)
     maximum_m = numpy.max(m_cs)
@@ -437,9 +447,11 @@ def get_systematic_errors(N, model="model1"):
         m_c2 = mPT_1loop(g, N) + g ** 2 * (params[best_Bbar_index, best, 1] -
                                            params[best_Bbar_index, best, -2] *
                                            K1(g, N))
+        print("Critical Mass using alpha2:")
+
         print(f"m_c2 = {m_c2}")
 
-        m_c2s = mPT_1loop(g, N) + g ** 2 * (alphas2 - lambduhs * K1(g, N))
+        m_c2s = mPT_1loop(g, N) + g ** 2 * (alphas2 - betas * K1(g, N))
 
         minimum_m = numpy.min(m_c2s)
         maximum_m = numpy.max(m_c2s)
@@ -507,20 +519,15 @@ def get_Bayes_factors(N, points=1000):
 
         model1 = model1_1a
         model2 = model2_1a
-        param_names = ["alpha", "f0", "f1", "lambduh", "nu"]
+        param_names = ["alpha", "f0", "f1", "beta", "nu"]
 
         alpha_range = [-0.4, 0.4]
         f0_range = [0, 1]
         f1_range = [-20, 20]
-        lambduh_range = [-15, 15]
+        beta_range = [-15, 15]
         nu_range = [0, 15]
 
-        # alpha_range = [-0.1, 0.1]
-        # f0_range = [0, 1]
-        # f1_range = [-2, 2]
-        # lambduh_range = [0, 2]
-        # nu_range = [0, 2]
-        prior_range = [alpha_range, f0_range, f1_range, lambduh_range,
+        prior_range = [alpha_range, f0_range, f1_range, beta_range,
                        nu_range]
 
     if N == 4:
@@ -531,23 +538,17 @@ def get_Bayes_factors(N, points=1000):
 
         model1 = model1_2a
         model2 = model2_2a
-        param_names = ["alpha1", "alpha2", "f0", "f1", "lambduh", "nu"]
+        param_names = ["alpha1", "alpha2", "f0", "f1", "beta", "nu"]
 
         alpha_range1 = [-0.4, 0.4]
         alpha_range2 = [-0.4, 0.4]
         f0_range = [0, 1]
         f1_range = [-20, 20]
-        lambduh_range = [-15, 15]
+        beta_range = [-15, 15]
         nu_range = [0, 15]
 
-        # alpha_range1 = [-0.1, 0.1]
-        # alpha_range2 = [-0.1, 0.1]
-        # f0_range = [0, 1]
-        # f1_range = [-2, 2]
-        # lambduh_range = [0, 2]
-        # nu_range = [0, 2]
         prior_range = [alpha_range1, alpha_range2, f0_range, f1_range,
-                       lambduh_range, nu_range]
+                       beta_range, nu_range]
 
     n_params = len(prior_range)
     Bayes_factors = numpy.zeros(len(GL_mins))
