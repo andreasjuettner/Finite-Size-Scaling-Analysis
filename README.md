@@ -35,7 +35,7 @@ points with user-determined values (`Binderanalysis.py`)
 `python3 Binderanalysis.py <N> <ag> <Bbar> <L/a>`
 where `N` as in `SU(N)`, `ag` the gauge coupling, `Bbar` the desired crossing point, `L/a` the desired lattice size.
 
-The required MCMC data can be donwloaded from zenodo here **UNDER CONSTRUCTION** and needs to be copied into a local subcirectory
+The required MCMC data can be donwloaded from zenodo.org under DOI 10.5281/zenodo.4266114 and needs to be copied into a local subdirectory
 called `h5data/`. The data file contains data for
 
  - `N`=2,4
