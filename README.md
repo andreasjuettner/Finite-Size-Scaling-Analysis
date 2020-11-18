@@ -52,9 +52,14 @@ The output will be stored in `h5data/Bindercrossings.h5` and is required by the 
 This script contains 4 functions which produce 4 distint results from the paper. All 4 functions readin data from `h5data/Bindercrossings.h5`. All functions take a single argument of `N` as in `SU(N)`. The functions are as follows:
 
    - `get_pvalues_central_fit(N)`: This function returns the p-values used in figure 4. (e.g. the p-values of the proposed fit anzatz with the central fit across a range of `gL_{min}` values)
-   - `get_statistical_errors_central_fit(N)`: This function returns the central values and statistical errors on the model parameters under the bootstrap in the central fit.
-   - `get_systematic_errors(N)`: This function returns the central values of the model parameters in the central fit and the systematic error found by considering all fits with more than 15 degrees of freedom.
-   - `get_Bayes_factors(N, points=1000)`: This function returns `log_{10}` of the Bayes factors used in figure 4. (e.g. the Bayes factors of the proposed fit anzatz with the central fit across a range of `gL_{min}` values). The input parameter "points" describes the number of live points used in the MULTINEST algorithm. The higher this number, the higher the accuracy in the result and the higher the computational demand.
+   - `get_statistical_errors_central_fit(N, model_name="model1")`: This
+   function returns the central values and statistical errors on the model parameters under the bootstrap in the central fit. The variable "model_name"
+   determines whether the central fit of the finite anzatz (model1) or the
+   IR divergent anzatz (model2) is investigated.
+   - `get_systematic_errors(N, model_name="model1")`: This function returns the central values of the model parameters in the central fit and the systematic error found by considering all fits with more than 15 degrees of freedom and
+   a p-value between 0.05 and 0.95. The variable "model_name" determines
+   whether the fits of the finite anzatz (model1) or the IR divergent anzatz (model2) is investigated.
+   - `get_Bayes_factors(N, points=1000)`: This function returns `log_{10}` of the Bayes factors used in figure 4. (e.g. the Bayes factors of the proposed fit anzatz with the central fit across a range of `gL_{min}` values). The input parameter "points" describes the number of live points used in the MULTINEST algorithm. The higher this number, the higher the accuracy in the result and the higher the computational demand. To produce the plot of the Bayes factor against gL_min 5000 points were used. For the posterior plots 1000 points were used.
 
 The exact form of the function return values is detailed in the function doc-strings. After running `python3 -i publication_results.py`, simply call the function you wish to run with the N value you wish to use. To change the specifics, e.g. to try a non-central fit, simply edit the relevent parameters, which are defined at the start of each function.
 
