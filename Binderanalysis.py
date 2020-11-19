@@ -356,9 +356,6 @@ class Critical_analysis():
 
         except Exception:
             return np.nan
-                       float(sys.argv[2]),  # ag
-                       float(sys.argv[3]),  # Bbar
-                       int(sys.argv[4]))    # L / a
 
     def reweight_Binder(self, msq, L1bs, L0bs):
         """
@@ -369,9 +366,6 @@ class Critical_analysis():
         # compute reweighting factor for each ensemble, then reweight, then bin
         iinclude = self.compute_overlap(msq)
 
-                       float(sys.argv[2]),  # ag
-                       float(sys.argv[3]),  # Bbar
-                       int(sys.argv[4]))    # L / a
         res = []
         dres = []
         # loop over masses to be included in current reweighting
