@@ -211,7 +211,7 @@ def run_pymultinest(prior_range, model, GL_min, GL_max, n_params, directory,
                     f"{N}_GLmin{GL_min:.1f}_p{n_live_points}")
 
     # Save the priors into a file
-    pickle.dump(prior_range, open(f"{directory}priors_{prior_name}_N{N}" +
+    pickle.dump(prior_range, open(f"{directory}{tag}priors_{prior_name}_N{N}" +
                                   f"_GLmin{GL_min:.1f}_GLmax{GL_max:.1f}" +
                                   f"_p{n_live_points}.pcl", "wb"))
 
