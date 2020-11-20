@@ -301,6 +301,10 @@ def get_systematic_errors(N, model_name="model1"):
             > "m_c2": float, Estimate of the critical mass using alpha 2
             > "m_c_error2": float, Systematic error on this estimate using
                 alpha2
+            > "m_c": float, Overall estimate of critical mass (same as alpha 1
+                result)
+            > "m_c_error": float, Overall systematic error when accounting for
+                both alpha values
     """
     GL_mins = numpy.array([0.8, 1.6, 2.4, 3.2, 4, 4.8, 6.4, 8, 9.6, 12.8, 14.4,
                            16, 19.2, 24, 25.6, 28.8, 32])
@@ -466,18 +470,25 @@ def get_systematic_errors(N, model_name="model1"):
 
             m_c2s = mPT_1loop(g, N) + g ** 2 * (alphas2 - betas * K1(g, N))
 
-            minimum_m = numpy.min(m_c2s)
-            maximum_m = numpy.max(m_c2s)
+            minimum_m2 = numpy.min(m_c2s)
+            maximum_m2 = numpy.max(m_c2s)
 
-            print(f"m_c2_range = {[minimum_m, maximum_m]}")
-
-            m_c2_error = max(m_c2 - minimum_m, maximum_m - m_c2)
+            m_c2_error = max(m_c2 - minimum_m2, maximum_m2 - m_c2)
             print(f"m_c2_error = {m_c2_error}")
+
+            # Get the overall systematic error accounting for both alphas
+            m_c_error_overall = max(max(m_c - minimum_m, maximum_m - m_c),
+                                    max(m_c - minimum_m2, maximum_m2 - m_c))
+
+            print("Overall result when accounting for both alphas:")
+            print(f"m_c = {m_c} +- {m_c_error_overall}")
 
             results["m_c1"] = m_c
             results["m_c_error1"] = m_c_error
             results["m_c2"] = m_c2
             results["m_c_error2"] = m_c2_error
+            results["m_c"] = m_c
+            results["m_c_error"] = m_c_error_overall
 
     return results
 
