@@ -42,9 +42,16 @@ called `h5data/`. The data file contains data for
  - `ag`=0.1,0.2,0.3,0.5,0.6
  - `L/a`=8,16,32,48,64,96,128
 
-The shell script `do_Binderanalysis.sh` loops over all available data. Note the `&` in the shell script which will trigger many instances of the code running in parallel. This might need to be adapted for smaller compute nodes.
+For `N = 2`:
 
-The output will be stored in `h5data/Bindercrossings.h5` and is required by the following codes.
+- `Bbar`=0.51,0.52,0.53,0.54,0.55,0.56,0.57,0.58,0.59
+
+For `N = 4`:
+
+- `Bbar`=0.42,0.43,0.44,0.45,0.46,0.47
+
+To reproduce the results stored in `h5data/Bindercrossings.h5` one needs to iterate over all `N`, `ag`, `L/a` and `Bbar` values. By default the output produced will be stored in `h5data/Bindercrossings.h5` and is required by the following codes. If you don't wish to rerun this part of the code then you can use the#
+`h5data/Bindercrossings.h5` data file that comes with the repository.
 
 ### Reproducing Plot data
 `python3 -i publication_results.py`
