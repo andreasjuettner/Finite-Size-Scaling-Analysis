@@ -50,7 +50,7 @@ For `N = 4`:
 
 - `Bbar`=0.42,0.43,0.44,0.45,0.46,0.47
 
-To reproduce the results stored in `h5data/Bindercrossings.h5` one needs to iterate over all `N`, `ag`, `L/a` and `Bbar` values. By default the output produced will be stored in `h5data/Bindercrossings.h5` and is required by the following codes. If you don't wish to rerun this part of the code then you can use the#
+To reproduce the results stored in `h5data/Bindercrossings.h5` one needs to iterate over all `N`, `ag`, `L/a` and `Bbar` values. By default the output produced will be stored in `h5data/Bindercrossings.h5` and is required by the following codes. If you don't wish to rerun this part of the code then you can use the
 `h5data/Bindercrossings.h5` data file that comes with the repository.
 
 ### Reproducing Plot data
