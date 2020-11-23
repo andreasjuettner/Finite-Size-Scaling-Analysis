@@ -130,20 +130,22 @@ def get_statistical_errors_central_fit(N, model_name="model1", GL_min_in=None,
             > "params": list of floats, parameter estimates of the central fit
             > "params_std": list of floats, statistical error on these
                 estimates
+            > "param_names": list of strings, the names of the parameters in
+                the same order as in "params" and "params_std"
 
-        if N == 2 and model_name == "model1":
-            > "m_c": float, Estimate of the critical mass at g = 0.1
-            > "m_c_error": float, Statistical error on this estimate
+            if N == 2 and model_name == "model1":
+                > "m_c": float, Estimate of the critical mass at g = 0.1
+                > "m_c_error": float, Statistical error on this estimate
 
-        if N == 4 and model_name == "model1":
-            > "m_c1": float, Estimate of the critical mass using alpha 1 at
-                g = 0.1
-            > "m_c_error1": float, Statistical error on this estimate using
-                alpha1
-            > "m_c2": float, Estimate of the critical mass using alpha 2 at
-                g = 0.1
-            > "m_c_error2": float, Statistical error on this estimate using
-                alpha2
+            if N == 4 and model_name == "model1":
+                > "m_c1": float, Estimate of the critical mass using alpha 1 at
+                    g = 0.1
+                > "m_c_error1": float, Statistical error on this estimate using
+                    alpha1
+                > "m_c2": float, Estimate of the critical mass using alpha 2 at
+                    g = 0.1
+                > "m_c_error2": float, Statistical error on this estimate using
+                    alpha2
     """
     g_s = [0.1, 0.2, 0.3, 0.5, 0.6]
     L_s = [8, 16, 32, 48, 64, 96, 128]
@@ -268,6 +270,8 @@ def get_statistical_errors_central_fit(N, model_name="model1", GL_min_in=None,
             results["m_c2"] = m_c2
             results["m_c_error2"] = m_c2_error
 
+    results["param_names"] = param_names
+
     return results
 
 
@@ -289,22 +293,24 @@ def get_systematic_errors(N, model_name="model1"):
         results: dictionary containing:
             > "params": list of floats, parameter estimates of the central fit
             > "params_std": list of floats, systematic error on these estimates
+            > "param_names": list of strings, the names of the parameters in
+                the same order as in "params" and "params_std"
 
-        if N == 2 and model_name == "model1":
-            > "m_c": float, Estimate of the critical mass
-            > "m_c_error": float, Systematic error on this estimate
+            if N == 2 and model_name == "model1":
+                > "m_c": float, Estimate of the critical mass
+                > "m_c_error": float, Systematic error on this estimate
 
-        if N == 4 and model_name == "model2":
-            > "m_c1": float, Estimate of the critical mass using alpha 1
-            > "m_c_error1": float, Systematic error on this estimate using
-                alpha1
-            > "m_c2": float, Estimate of the critical mass using alpha 2
-            > "m_c_error2": float, Systematic error on this estimate using
-                alpha2
-            > "m_c": float, Overall estimate of critical mass (same as alpha 1
-                result)
-            > "m_c_error": float, Overall systematic error when accounting for
-                both alpha values
+            if N == 4 and model_name == "model2":
+                > "m_c1": float, Estimate of the critical mass using alpha 1
+                > "m_c_error1": float, Systematic error on this estimate using
+                    alpha1
+                > "m_c2": float, Estimate of the critical mass using alpha 2
+                > "m_c_error2": float, Systematic error on this estimate using
+                    alpha2
+                > "m_c": float, Overall estimate of critical mass (same as
+                    alpha 1 result)
+                > "m_c_error": float, Overall systematic error when accounting
+                    for both alpha values
     """
     GL_mins = numpy.array([0.8, 1.6, 2.4, 3.2, 4, 4.8, 6.4, 8, 9.6, 12.8, 14.4,
                            16, 19.2, 24, 25.6, 28.8, 32])
@@ -489,6 +495,8 @@ def get_systematic_errors(N, model_name="model1"):
             results["m_c_error2"] = m_c2_error
             results["m_c"] = m_c
             results["m_c_error"] = m_c_error_overall
+
+    results["param_names"] = param_names
 
     return results
 
