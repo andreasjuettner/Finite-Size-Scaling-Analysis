@@ -3,7 +3,11 @@ conda activate intel-py37
 export OMP_NUM_THREADS=1
 
 # For logging
-mkdir log
+if [ ! -d "log" ]
+then
+    mkdir log
+fi
+
 
 for L in  128 96 64 48 32 16 8; do 
  for Bbar in 0.51 0.52 0.53 0.54 0.55 0.56 0.57 0.58 0.59; do #0.56 0.59 0.57; do
