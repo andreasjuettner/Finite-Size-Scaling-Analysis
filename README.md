@@ -63,7 +63,6 @@ This script contains 4 functions which produce 4 distint results from the paper.
 
 The exact form of the function return values is detailed in the function doc-strings. After running `python3 -i publication_results.py`, simply call the function you wish to run with the N value you wish to use. To change the specifics, e.g. to try a non-central fit, simply edit the relevent parameters, which are defined at the start of each function.
 
-
 To install MULTINEST and Pymultinest please follow the instructions at `https://johannesbuchner.github.io/PyMultiNest/`.
 
 ## Required libraries
