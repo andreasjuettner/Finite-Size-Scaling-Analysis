@@ -1,6 +1,7 @@
 # Finite-Size-Scaling-Analysis
 
 ## License: GPL v2
+## [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4290508.svg)](https://doi.org/10.5281/zenodo.4290508)
 
 ## Authors: 
  - Andreas Juettner    <juettner@soton.ac.uk>
