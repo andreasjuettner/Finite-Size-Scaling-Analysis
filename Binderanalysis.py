@@ -586,9 +586,11 @@ def compute_Bindercrossing(N, g, Bbar, Lin):
 
     # tailored min and max to extrapolate beyond simulatedpoints by means of
     # reweighting
-    if mlims[sn][iLin]:
-        xmin = -mlims[sn][iLin][1]
-        xmax = -mlims[sn][iLin][0]
+    if sn in mlims:
+        if iLin in mlims[sn]:
+            if mlims[sn][iLin]:
+                xmin = -mlims[sn][iLin][1]
+                xmax = -mlims[sn][iLin][0]
 
     # compute integrated autocorrelation time for basic quantities for each
     # ensemble and bin data correspondingly
